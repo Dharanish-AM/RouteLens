@@ -1,5 +1,4 @@
 const { glob } = require("glob");
-const path = require("path")
 
 async function scanProject(rootPath) {
   const files = await glob(

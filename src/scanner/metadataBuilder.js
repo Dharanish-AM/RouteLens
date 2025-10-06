@@ -1,4 +1,3 @@
-
 function enrichMetadata(endpoints) {
   return endpoints.map(ep => {
     const params = [];
