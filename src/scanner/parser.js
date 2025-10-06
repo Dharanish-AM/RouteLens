@@ -24,6 +24,7 @@ function extractEndpoints(filePath) {
           if (h.type === "ArrowFunctionExpression" || h.type === "FunctionExpression") return "anonymous";
           return "unknown";
         });
+        const handlersAst = node.arguments.slice(1);
 
         if (pathArg && pathArg.value) {
           endpoints.push({
@@ -32,6 +33,7 @@ function extractEndpoints(filePath) {
             file: filePath,
             line: node.loc.start.line,
             handlers,
+            handlersAst,
             middleware: handlers.length > 1 ? handlers.slice(0, -1) : [],
             mainHandler: handlers.length > 0 ? handlers[handlers.length - 1] : null
           });

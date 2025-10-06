@@ -34,6 +34,11 @@ app.delete("/users/:id", sampleMiddleware, async (req, res) => {
 // GET with query params and async handler
 app.get("/search", asyncController);
 
+// New GET endpoint /filter that responds with query parameters
+app.get("/filter", (req, res) => {
+  res.json({ filters: req.query });
+});
+
 // POST with middleware and async handler
 app.post("/posts", sampleMiddleware, async (req, res) => {
   await new Promise((resolve) => setTimeout(resolve, 15));
