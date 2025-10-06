@@ -19,12 +19,21 @@ function extractEndpoints(filePath) {
       ) {
         const method = node.callee.property.name.toUpperCase();
         const pathArg = node.arguments[0];
+        const handlers = node.arguments.slice(1).map(h => {
+          if (h.type === "Identifier") return h.name;
+          if (h.type === "ArrowFunctionExpression" || h.type === "FunctionExpression") return "anonymous";
+          return "unknown";
+        });
+
         if (pathArg && pathArg.value) {
           endpoints.push({
             method,
             path: pathArg.value,
             file: filePath,
-            line: node.loc.start.line
+            line: node.loc.start.line,
+            handlers,
+            middleware: handlers.length > 1 ? handlers.slice(0, -1) : [],
+            mainHandler: handlers.length > 0 ? handlers[handlers.length - 1] : null
           });
         }
       }
@@ -34,4 +43,4 @@ function extractEndpoints(filePath) {
   return endpoints;
 }
 
-module.exports = {extractEndpoints}
+module.exports = { extractEndpoints };

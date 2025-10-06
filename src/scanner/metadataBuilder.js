@@ -7,8 +7,18 @@ function enrichMetadata(endpoints) {
     }
 
     const hasBody = ep.method !== "GET";
-    return { ...ep, params, hasBody };
+
+    // Example: mark route as protected if auth middleware exists
+    const isProtected = ep.middleware.some(mw => /auth/i.test(mw));
+
+    return { 
+      ...ep, 
+      params, 
+      hasBody, 
+      middlewareCount: ep.middleware.length,
+      isProtected
+    };
   });
 }
 
-module.exports = {enrichMetadata}
+module.exports = { enrichMetadata };
