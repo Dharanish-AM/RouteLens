@@ -1,0 +1,46 @@
+{
+  "name": "routelens",
+  "displayName": "RouteLens",
+  "description": "Discover all Express/Fastify endpoints visually in your VS Code workspace.",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "publisher": "RouteLens",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onCommand:extension.scanEndpoints"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.scanEndpoints",
+        "title": "Scan Project Endpoints"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "routelens",
+          "title": "RouteLens",
+          "icon": "images/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "routelens": [
+        {
+          "id": "endpointExplorer",
+          "name": "RouteLens Endpoint Explorer",
+          "icon": "./images/icon.svg"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "@babel/parser": "^7.25.0",
+    "@babel/traverse": "^7.25.0",
+    "glob": "^10.3.3"
+  }
+}
