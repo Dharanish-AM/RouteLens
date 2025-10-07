@@ -2,7 +2,7 @@
   "name": "routelens",
   "displayName": "RouteLens",
   "description": "Discover all Express/Fastify endpoints visually in your VS Code workspace.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "commonjs",
   "icon": "images/routelens.png",
   "publisher": "DharanishAM",

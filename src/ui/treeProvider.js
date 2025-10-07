@@ -17,7 +17,7 @@ class EndpointTreeProvider {
 
   refresh(newEndpoints) {
     this.endpoints = newEndpoints || [];
-    this._onDidChangeTreeData.fire(); // refresh tree
+    this._onDidChangeTreeData.fire(); 
   }
 
   getTreeItem(element) {
@@ -26,7 +26,7 @@ class EndpointTreeProvider {
       element.collapsibleState || vscode.TreeItemCollapsibleState.None
     );
 
-    // Color-coded method badges
+    
     if (element.type === "method") {
       item.iconPath = new vscode.ThemeIcon(
         "circle-filled",
@@ -34,7 +34,7 @@ class EndpointTreeProvider {
       );
     }
 
-    // Endpoint nodes
+    
     if (element.type === "endpoint") {
       item.description = `${element.data.file.split("/").pop()} [line: ${
         element.data.line

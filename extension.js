@@ -5,16 +5,16 @@ const { EndpointTreeProvider } = require("./src/ui/treeProvider.js");
 let treeProvider;
 
 function activate(context) {
-  // Initialize the Endpoint Explorer tree view
+  
   treeProvider = new EndpointTreeProvider([]);
   const treeView = vscode.window.createTreeView("endpointExplorer", {
     treeDataProvider: treeProvider,
   });
 
-  // ✅ Set a context key so the Scan button always appears
+  
   vscode.commands.executeCommand("setContext", "view", "endpointExplorer");
 
-  // Register command: triggered by the Scan Project button or manually
+  
   const scanCommand = vscode.commands.registerCommand(
     "extension.scanEndpoints",
     async () => {
@@ -42,7 +42,7 @@ function activate(context) {
     }
   );
 
-  // Keep all disposables managed by VS Code
+  
   context.subscriptions.push(scanCommand, treeView);
 }
 

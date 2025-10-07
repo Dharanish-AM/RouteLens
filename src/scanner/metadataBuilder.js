@@ -13,7 +13,7 @@ function hasReqQuery(node) {
     }
   }
 
-  // Recursively check child nodes
+  
   for (const key in node) {
     if (Array.isArray(node[key])) {
       for (const child of node[key]) {
