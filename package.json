@@ -15,13 +15,16 @@
     "url": "https://github.com/Dharanish-AM/RouteLens"
   },
   "activationEvents": [
-    "onCommand:extension.scanEndpoints"
+    "onView:endpointExplorer",
+    "onCommand:extension.scanEndpoints",
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
       {
         "command": "extension.scanEndpoints",
-        "title": "Scan Project Endpoints"
+        "title": "Scan Project",
+        "icon": "$(refresh)"
       }
     ],
     "viewsContainers": {
@@ -39,6 +42,21 @@
           "id": "endpointExplorer",
           "name": "RouteLens Endpoint Explorer",
           "icon": "images/routelens.svg"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "endpointExplorer",
+        "contents": "👋 Welcome to RouteLens!\n\n[Scan Project](command:extension.scanEndpoints) to discover all Express/Fastify endpoints in your workspace."
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "extension.scanEndpoints",
+          "when": "view == endpointExplorer || viewItem == endpointExplorer",
+          "group": "navigation@1"
         }
       ]
     }

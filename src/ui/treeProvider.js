@@ -9,8 +9,15 @@ const methodColors = {
 };
 
 class EndpointTreeProvider {
-  constructor(endpoints) {
-    this.endpoints = endpoints || [];
+  constructor(endpoints = []) {
+    this.endpoints = endpoints;
+    this._onDidChangeTreeData = new vscode.EventEmitter();
+    this.onDidChangeTreeData = this._onDidChangeTreeData.event;
+  }
+
+  refresh(newEndpoints) {
+    this.endpoints = newEndpoints || [];
+    this._onDidChangeTreeData.fire(); // refresh tree
   }
 
   getTreeItem(element) {
@@ -44,7 +51,6 @@ Main Handler: ${element.data.mainHandler || "none"}
 Middleware Count: ${element.data.middlewareCount}
 Is Protected: ${element.data.isProtected ? "Yes" : "No"}`;
       item.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-
       item.command = {
         command: "vscode.open",
         title: "Open File",
@@ -60,21 +66,15 @@ Is Protected: ${element.data.isProtected ? "Yes" : "No"}`;
           },
         ],
       };
-
-      item.iconPath = new vscode.ThemeIcon("rocket"); // endpoint icon
+      item.iconPath = new vscode.ThemeIcon("rocket");
     }
 
-    // Info nodes (params, body, middleware count etc.)
     if (element.type === "info") {
-      item.collapsibleState = vscode.TreeItemCollapsibleState.None;
       item.iconPath = new vscode.ThemeIcon("circle-small");
     }
 
-    // Middleware and handler nodes
     if (element.type === "middleware" || element.type === "handler") {
-      item.collapsibleState = vscode.TreeItemCollapsibleState.None;
-      item.iconPath = new vscode.ThemeIcon("tools"); // small gear icon
-      item.tooltip = `Line: ${element.line || "unknown"}`;
+      item.iconPath = new vscode.ThemeIcon("tools");
     }
 
     return item;
@@ -82,7 +82,6 @@ Is Protected: ${element.data.isProtected ? "Yes" : "No"}`;
 
   getChildren(element) {
     if (!element) {
-      // Top-level: group endpoints by method
       const grouped = {};
       this.endpoints.forEach((ep) => {
         if (!grouped[ep.method]) grouped[ep.method] = [];
@@ -96,7 +95,6 @@ Is Protected: ${element.data.isProtected ? "Yes" : "No"}`;
     }
 
     if (element.type === "method") {
-      // Endpoint nodes under method
       const endpoints = this.endpoints.filter(
         (ep) => ep.method === element.label
       );
@@ -112,61 +110,29 @@ Is Protected: ${element.data.isProtected ? "Yes" : "No"}`;
       const ep = element.data;
       const children = [];
 
-      // Params
       children.push({
         label: `Params: ${ep.params?.length ? ep.params.join(", ") : "none"}`,
-        collapsibleState: vscode.TreeItemCollapsibleState.None,
         type: "info",
       });
-
-      // Query
       children.push({
         label: `Has Query: ${ep.hasQuery ? "Yes" : "No"}`,
-        collapsibleState: vscode.TreeItemCollapsibleState.None,
         type: "info",
       });
-
-      // Body
       children.push({
         label: `Has Body: ${ep.hasBody ? "Yes" : "No"}`,
-        collapsibleState: vscode.TreeItemCollapsibleState.None,
         type: "info",
       });
 
-      // Middleware nodes
-      ep.middleware.forEach((mw) => {
-        children.push({
-          label: `Middleware: ${mw}`,
-          collapsibleState: vscode.TreeItemCollapsibleState.None,
-          type: "middleware",
-        });
-      });
+      ep.middleware.forEach((mw) =>
+        children.push({ label: `Middleware: ${mw}`, type: "middleware" })
+      );
+      ep.handlers.forEach((h) =>
+        children.push({ label: `Handler: ${h}`, type: "handler" })
+      );
 
-      // Handlers nodes
-      ep.handlers.forEach((h) => {
-        children.push({
-          label: `Handler: ${h}`,
-          collapsibleState: vscode.TreeItemCollapsibleState.None,
-          type: "handler",
-        });
-      });
-
-      // Other info
-      children.push({
-        label: `Main Handler: ${ep.mainHandler || "none"}`,
-        collapsibleState: vscode.TreeItemCollapsibleState.None,
-        type: "info",
-      });
-      children.push({
-        label: `Middleware Count: ${ep.middlewareCount}`,
-        collapsibleState: vscode.TreeItemCollapsibleState.None,
-        type: "info",
-      });
-      children.push({
-        label: `Is Protected: ${ep.isProtected ? "Yes" : "No"}`,
-        collapsibleState: vscode.TreeItemCollapsibleState.None,
-        type: "info",
-      });
+      children.push({ label: `Main Handler: ${ep.mainHandler || "none"}`, type: "info" });
+      children.push({ label: `Middleware Count: ${ep.middlewareCount}`, type: "info" });
+      children.push({ label: `Is Protected: ${ep.isProtected ? "Yes" : "No"}`, type: "info" });
 
       return children;
     }
